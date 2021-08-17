@@ -42,9 +42,14 @@ func InputEventOrInterval() string {
 		}
 	}()
 
+	// 仮のping送信
 	rand.Seed(time.Now().UnixNano())
 	if a := rand.Intn(2); a == 1 {
 		ping <- true
+	}
+
+	if str == "a" {
+		return str
 	}
 
 	time.Sleep(1 * time.Second)

@@ -1,7 +1,8 @@
 package config
 
-import "time"
-
 const (
-	TYPING_INTERVAL = 400 * time.Millisecond
+	TYPING_INTERVAL = 400
+	SINGLE_PING     = "j"
+	TRIPLE_PING     = "k"
+	STOP_PING       = "l"
 )

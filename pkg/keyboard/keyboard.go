@@ -5,10 +5,12 @@ import (
 	"math/rand"
 	"morse/config"
 	"time"
+
+	"github.com/eiannone/keyboard"
 )
 
 func InputEventOrIntervalFail() {
-	ticker := time.NewTicker(config.TYPING_INTERVAL)
+	ticker := time.NewTicker(config.TYPING_INTERVAL * time.Millisecond)
 	defer ticker.Stop()
 
 	fin := make(chan bool)
@@ -52,6 +54,31 @@ func InputEventOrInterval() string {
 		return str
 	}
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(config.TYPING_INTERVAL * time.Millisecond)
 	return str
+}
+
+func MyGetKey(ret string) string {
+	if err := keyboard.Open(); err != nil {
+		panic(err)
+	}
+	defer keyboard.Close()
+
+	fmt.Println("Press ESC to quit")
+	for {
+
+		char, _, err := keyboard.GetKey()
+		if err != nil {
+			panic(err)
+		}
+
+		if char == []rune(config.STOP_PING)[0] {
+			fmt.Println()
+			break
+		} else {
+			ret += string(char)
+			fmt.Printf(string(char))
+		}
+	}
+	return ret
 }

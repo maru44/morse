@@ -1,6 +1,7 @@
 package keyboard
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"morse/config"
@@ -66,12 +67,6 @@ func InputEventOrInterval() string {
 
 func InputOrInterval() (str string) {
 	// ping := make(chan string)
-	// go func() {
-	// 	select {
-	// 	case <-ping:
-	// 		str = <-ping
-	// 	}
-	// }()
 
 	char, _, err := keyboard.GetKey() // これでgoroutineが止まっている
 	if err != nil {
@@ -82,23 +77,19 @@ func InputOrInterval() (str string) {
 
 	inp := string(char)
 	if inp == config.SINGLE_PING {
-		// ping <- config.SINGLE_LETTER
-		// return
-		return config.SINGLE_LETTER
+		str = config.SINGLE_LETTER
 	} else if inp == config.TRIPLE_PING {
-		// ping <- config.TRIPLE_LETTER
-		// return
-		return config.TRIPLE_LETTER
+		str = config.TRIPLE_LETTER
 	} else if inp == config.QUIT_PING {
-		// ping <- config.QUIT_LETTER
-		// return
-		return config.QUIT_LETTER
+		str = config.QUIT_LETTER
 	}
 
-	time.Sleep(config.TYPING_INTERVAL * time.Millisecond)
-	return config.INTERVAL_LETTER
+	// time.Sleep(config.TYPING_INTERVAL * time.Millisecond)
+	str = config.INTERVAL_LETTER
+	return
 }
 
+//
 func MyGetKey(ret string) string {
 	if err := keyboard.Open(); err != nil {
 		panic(err)
@@ -108,7 +99,11 @@ func MyGetKey(ret string) string {
 	fmt.Println("Press L to quit")
 	for {
 
-		str := InputOrInterval()
+		// str := InputOrInterval()
+		str, err := getKey()
+		if err != nil {
+			panic(err)
+		}
 
 		if str == config.QUIT_LETTER {
 			fmt.Println()
@@ -120,3 +115,80 @@ func MyGetKey(ret string) string {
 	}
 	return ret
 }
+
+func getKey() (str string, err error) {
+	waitingForKey := make(chan bool)
+	inputComm := make(chan keyboard.KeyEvent)
+	// Check if opened
+	if !keyboard.IsStarted(time.Millisecond * 50) {
+		return "", errors.New("keyboard not opened")
+	}
+	// Check if already waiting for key
+	select {
+	case waitingForKey <- true:
+		return "", errors.New("already waiting for key")
+	default:
+	}
+
+	// 動いてない
+
+	for {
+		go func() {
+			select {
+			case ev := <-inputComm:
+				str = convertInputCode(string(ev.Rune))
+				print(str)
+				err = ev.Err
+
+			case keepAlive := <-waitingForKey:
+				if !keepAlive {
+					str = ""
+					err = errors.New("operation canceled")
+					print(err)
+				}
+			}
+		}()
+
+		if str != "" {
+			return
+		}
+
+		// こっちにしか来てない
+		time.Sleep(config.TYPING_INTERVAL * time.Millisecond)
+		str = config.INTERVAL_LETTER
+		return
+	}
+}
+
+func OriginalGetKey() (str string) {
+	rawStr, _ := getKey()
+	if rawStr == config.SINGLE_PING {
+		str = config.SINGLE_LETTER
+	} else if rawStr == config.TRIPLE_PING {
+		str = config.TRIPLE_LETTER
+	} else if rawStr == config.QUIT_PING {
+		str = config.QUIT_LETTER
+	} else if rawStr == config.INTERVAL_LETTER {
+		str = config.INTERVAL_LETTER
+	}
+	return
+}
+
+func convertInputCode(inp string) (out string) {
+	if inp == config.SINGLE_PING {
+		out = config.SINGLE_LETTER
+	} else if inp == config.TRIPLE_PING {
+		out = config.TRIPLE_LETTER
+	} else if inp == config.QUIT_PING {
+		out = config.QUIT_LETTER
+	} else if inp == config.INTERVAL_LETTER {
+		out = config.INTERVAL_LETTER
+	}
+	return
+}
+
+// memo
+/*
+inputCommはgoroutine内じゃ受け取れない
+GetKey()を使うとtime.Sleepもtime.Timerも効かない
+*/

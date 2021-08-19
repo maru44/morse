@@ -66,26 +66,35 @@ func InputEventOrInterval() string {
 }
 
 func InputOrInterval() (str string) {
-	// ping := make(chan string)
+	ping := make(chan string)
 
-	char, _, err := keyboard.GetKey() // これでgoroutineが止まっている
+	char, _, err := keyboard.GetKey()
 	if err != nil {
 		panic(err)
 	}
 
-	go func() {}()
+	go func() {
+		// timerなしでは動く!!
+		// t := time.NewTimer(config.TYPING_INTERVAL * time.Millisecond)
+		// <-t.C
+		// ping <- config.INTERVAL_LETTER
+		for {
+			select {
+			case inp := <-ping:
+				if inp == config.SINGLE_PING {
+					str = config.SINGLE_LETTER
+				} else if inp == config.TRIPLE_PING {
+					str = config.TRIPLE_LETTER
+				} else if inp == config.QUIT_PING {
+					str = config.QUIT_LETTER
+				} else if inp == config.INTERVAL_LETTER {
+					str = config.INTERVAL_LETTER
+				}
 
-	inp := string(char)
-	if inp == config.SINGLE_PING {
-		str = config.SINGLE_LETTER
-	} else if inp == config.TRIPLE_PING {
-		str = config.TRIPLE_LETTER
-	} else if inp == config.QUIT_PING {
-		str = config.QUIT_LETTER
-	}
-
-	// time.Sleep(config.TYPING_INTERVAL * time.Millisecond)
-	str = config.INTERVAL_LETTER
+			}
+		}
+	}()
+	ping <- string(char)
 	return
 }
 
@@ -99,11 +108,7 @@ func MyGetKey(ret string) string {
 	fmt.Println("Press L to quit")
 	for {
 
-		// str := InputOrInterval()
-		str, err := getKey()
-		if err != nil {
-			panic(err)
-		}
+		str := InputOrInterval()
 
 		if str == config.QUIT_LETTER {
 			fmt.Println()

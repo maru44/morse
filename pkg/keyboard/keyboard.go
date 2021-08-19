@@ -74,10 +74,12 @@ func InputOrInterval() (str string) {
 	}
 
 	go func() {
-		// timerなしでは動く!!
-		// t := time.NewTimer(config.TYPING_INTERVAL * time.Millisecond)
-		// <-t.C
-		// ping <- config.INTERVAL_LETTER
+		t := time.NewTimer(config.TYPING_INTERVAL * time.Millisecond)
+		<-t.C
+		ping <- config.INTERVAL_LETTER
+	}()
+
+	go func() {
 		for {
 			select {
 			case inp := <-ping:
@@ -88,13 +90,16 @@ func InputOrInterval() (str string) {
 				} else if inp == config.QUIT_PING {
 					str = config.QUIT_LETTER
 				} else if inp == config.INTERVAL_LETTER {
+					fmt.Print("a")
 					str = config.INTERVAL_LETTER
 				}
 
 			}
 		}
 	}()
+
 	ping <- string(char)
+
 	return
 }
 

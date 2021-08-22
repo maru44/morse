@@ -6,24 +6,48 @@ import (
 	"io"
 	"os"
 	"time"
+
+	"github.com/eiannone/keyboard"
 )
 
 func main() {
-	var (
-		ch_rcv = inputer(os.Stdin)
-	)
+	ch_rcv := make(chan string)
+	ch_cancel := make(chan string)
 
-	for {
-		for {
-			select {
-			case v := <-ch_rcv:
-				fmt.Print("inp", v)
-			case <-time.After(time.Second):
-				fmt.Print("_")
+	if err := keyboard.Open(); err != nil {
+		panic(err)
+	}
+	defer keyboard.Close()
+
+	// close も入れる
+	go func() {
+		select {
+		case v := <-ch_cancel:
+			if v == "STOP" {
+				break
+			}
+		default:
+			for {
+				select {
+				case v := <-ch_rcv:
+					fmt.Print("inp", v)
+				case <-time.After(time.Second):
+					fmt.Print("_")
+				}
 			}
 		}
-	}
+	}()
 
+	for {
+		char, key, err := keyboard.GetKey()
+		if err != nil {
+			panic(err)
+		}
+		ch_rcv <- string(char)
+		if key == keyboard.KeyEsc {
+			break
+		}
+	}
 }
 
 func inputer(r io.Reader) <-chan string {

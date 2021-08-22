@@ -1,4 +1,4 @@
-package keyboard
+package mykey
 
 import (
 	"morse/config"

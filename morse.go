@@ -29,7 +29,6 @@ func main() {
 		select {
 		case v := <-ch_cancel:
 			if v == "STOP" {
-				fmt.Println(ret)
 				break
 			}
 		default:
@@ -54,6 +53,7 @@ func main() {
 		}
 
 		if string(char) == config.QUIT_PING {
+			// fmt.Printf("\n%s\n", ret)
 			break
 		} else {
 			ch_rcv <- string(char)

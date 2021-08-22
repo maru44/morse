@@ -1,10 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io"
-	"os"
+	"morse/config"
+	"morse/pkg/mykey"
 	"time"
 
 	"github.com/eiannone/keyboard"
@@ -13,10 +12,16 @@ import (
 func main() {
 	ch_rcv := make(chan string)
 	ch_cancel := make(chan string)
+	ret := ""
 
 	if err := keyboard.Open(); err != nil {
 		panic(err)
 	}
+	fmt.Printf(
+		"%s => '%s', %s => '%s'\n%s => to quit\ninterval %d millisecond\n",
+		config.SINGLE_PING, config.SINGLE_LETTER, config.TRIPLE_PING, config.TRIPLE_LETTER,
+		config.QUIT_PING, config.TYPING_INTERVAL,
+	)
 	defer keyboard.Close()
 
 	// close も入れる
@@ -24,57 +29,34 @@ func main() {
 		select {
 		case v := <-ch_cancel:
 			if v == "STOP" {
+				fmt.Println(ret)
 				break
 			}
 		default:
 			for {
 				select {
 				case v := <-ch_rcv:
-					fmt.Print("inp", v)
-				case <-time.After(time.Second):
-					fmt.Print("_")
+					res := mykey.ConvertInputCode(v)
+					ret += res
+					fmt.Print(res)
+				case <-time.After(config.TYPING_INTERVAL * time.Millisecond):
+					ret += config.INTERVAL_LETTER
+					fmt.Print(config.INTERVAL_LETTER)
 				}
 			}
 		}
 	}()
 
 	for {
-		char, key, err := keyboard.GetKey()
+		char, _, err := keyboard.GetKey()
 		if err != nil {
 			panic(err)
 		}
-		ch_rcv <- string(char)
-		if key == keyboard.KeyEsc {
+
+		if string(char) == config.QUIT_PING {
 			break
-		}
-	}
-}
-
-func inputer(r io.Reader) <-chan string {
-	ch := make(chan string)
-	go func() {
-		s := bufio.NewScanner(r)
-		for s.Scan() {
-			ch <- s.Text()
-		}
-		close(ch)
-
-	}()
-	return ch
-}
-
-func oneWord3() string {
-	// ch_inp := make(chan string)
-	ch_inp := inputer(os.Stdin)
-
-	for {
-		select {
-		case <-ch_inp:
-			// close(tl)
-			fmt.Print("kita")
-			return "a"
-		case <-time.After(time.Second):
-			return "b"
+		} else {
+			ch_rcv <- string(char)
 		}
 	}
 }

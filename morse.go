@@ -38,7 +38,22 @@ func main() {
 	// 		}
 	// 	}
 	// 	fmt.Println(result)
-	fmt.Print(oneWord4())
+
+	// r := os.Stdin
+	// fmt.Print(oneWord4(r))
+
+	// for {
+	// 	// inputer(r)
+	// 	inp(r)
+	// }
+
+	// var a string
+	aword := make([]byte, 1)
+	fmt.Scan(&aword)
+	fmt.Println(fmt.Printf("unko: %c", aword))
+}
+
+func inp(r io.Reader) {
 }
 
 func inputer(r io.Reader) <-chan string {
@@ -46,9 +61,11 @@ func inputer(r io.Reader) <-chan string {
 	go func() {
 		s := bufio.NewScanner(r)
 		for s.Scan() {
-			ch <- s.Text()
+			fmt.Print(s.Text() + "dddd")
+			// ch <- s.Text()
 		}
 		close(ch)
+
 	}()
 	return ch
 }
@@ -162,8 +179,8 @@ func oneWord3() string {
 	}
 }
 
-func oneWord4() string {
-	var ch_inp = inputer(os.Stdin)
+func oneWord4(r io.Reader) string {
+	var ch_inp = inputer(r)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()

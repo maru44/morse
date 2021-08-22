@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"morse/config"
@@ -37,7 +38,7 @@ func main() {
 	// 		}
 	// 	}
 	// 	fmt.Println(result)
-	fmt.Print(oneWord())
+	fmt.Print(oneWord4())
 }
 
 func inputer(r io.Reader) <-chan string {
@@ -47,7 +48,40 @@ func inputer(r io.Reader) <-chan string {
 		for s.Scan() {
 			ch <- s.Text()
 		}
+		close(ch)
 	}()
+	return ch
+}
+
+func getOneOrTimeOut() (str string) {
+	r := os.Stdin
+	ch := make(chan string)
+
+	go func() {
+		s := bufio.NewScanner(r)
+		ch <- s.Text()
+	}()
+
+	go func() {
+		select {
+		case <-ch:
+			str = "a"
+			close(ch)
+		}
+	}()
+
+	if str != "" {
+		return
+	}
+
+	time.Sleep(time.Second)
+	return ""
+}
+
+func interval(d time.Duration) <-chan string {
+	ch := make(chan string)
+	time.NewTimer(d)
+	ch <- config.INTERVAL_LETTER
 	return ch
 }
 
@@ -72,27 +106,20 @@ oneWord:
 
 func oneWord() (str string) {
 	ch_inp := inputer(os.Stdin)
-	// strInput := make(chan string)
 
 	go func() {
 		select {
-		// case <-strInput:
 		case <-ch_inp:
 			str = "a"
+			return
+			// case <-timer.C:
+			// 	str = "b"
+			// 	return
 		}
 	}()
 
-	// ch_inp := inputer(os.Stdin)
-	// strInput <- <-ch_inp
-
-	if str != "" {
-		fmt.Print("inputed")
-		return
-	}
-
 	time.Sleep(time.Second)
-	str = "b"
-	return
+	return "b"
 }
 
 func oneWord2() (str string) {
@@ -116,6 +143,37 @@ func oneWord2() (str string) {
 		case <-to:
 			str = "b"
 			return
+		}
+	}
+}
+
+func oneWord3() string {
+	ch_inp := make(chan string)
+
+	for {
+		select {
+		case <-ch_inp:
+			// close(tl)
+			fmt.Print("kita")
+			return "a"
+		case <-time.After(time.Second):
+			return "b"
+		}
+	}
+}
+
+func oneWord4() string {
+	var ch_inp = inputer(os.Stdin)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return "fin"
+		case <-ch_inp:
+			return "a"
 		}
 	}
 }

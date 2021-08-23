@@ -11,7 +11,6 @@ import (
 
 func main() {
 	ch_rcv := make(chan string)
-	ch_cancel := make(chan string)
 	ret := ""
 
 	if err := keyboard.Open(); err != nil {
@@ -26,22 +25,19 @@ func main() {
 
 	// close も入れる
 	go func() {
-		select {
-		case v := <-ch_cancel:
-			if v == "STOP" {
-				break
-			}
-		default:
-			for {
-				select {
-				case v := <-ch_rcv:
+		for {
+			select {
+			case v := <-ch_rcv:
+				if v == config.QUIT_LETTER {
+					break
+				} else {
 					res := mykey.ConvertInputCode(v)
 					ret += res
 					fmt.Print(res)
-				case <-time.After(config.TYPING_INTERVAL * time.Millisecond):
-					ret += config.INTERVAL_LETTER
-					fmt.Print(config.INTERVAL_LETTER)
 				}
+			case <-time.After(config.TYPING_INTERVAL * time.Millisecond):
+				ret += config.INTERVAL_LETTER
+				fmt.Print(config.INTERVAL_LETTER)
 			}
 		}
 	}()
@@ -53,7 +49,7 @@ func main() {
 		}
 
 		if string(char) == config.QUIT_PING {
-			// fmt.Printf("\n%s\n", ret)
+			ch_rcv <- config.QUIT_LETTER
 			break
 		} else {
 			ch_rcv <- string(char)

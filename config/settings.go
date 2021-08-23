@@ -12,6 +12,7 @@ const (
 	QUIT_LETTER     = "QUIT"
 
 	DEFAULT_FILE_NAME = "morse"
+	DEFAULT_FILE_PATH = "storage/"
 
 	INTERVAL_MODE = "NORMAL"
 	/*

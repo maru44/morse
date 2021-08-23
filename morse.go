@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"morse/config"
+	"morse/pkg/file"
 	"morse/pkg/mykey"
+	"os"
 	"time"
 
 	"github.com/eiannone/keyboard"
@@ -29,6 +32,7 @@ func main() {
 			select {
 			case v := <-ch_rcv:
 				if v == config.QUIT_LETTER {
+					close(ch_rcv)
 					break
 				} else {
 					res := mykey.ConvertInputCode(v)
@@ -44,15 +48,46 @@ func main() {
 
 	for {
 		char, _, err := keyboard.GetKey()
+		defer keyboard.Close()
 		if err != nil {
 			panic(err)
 		}
 
 		if string(char) == config.QUIT_PING {
 			ch_rcv <- config.QUIT_LETTER
+			keyboard.Close()
 			break
 		} else {
 			ch_rcv <- string(char)
 		}
+	}
+
+	// file save
+	scan1 := bufio.NewScanner(os.Stdin)
+	fmt.Println("\nDo you save it? Press y OR n.")
+	for {
+		scan1.Scan()
+		isSave := scan1.Text()
+
+		switch isSave {
+		case "y":
+			fmt.Println("Enter file name.Default is morse.txt")
+			scan2 := bufio.NewScanner(os.Stdin)
+			scan2.Scan()
+			fileName := scan2.Text()
+			if fileName == "" {
+				file.WriteFile(
+					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, config.DEFAULT_FILE_NAME), ret,
+				)
+			} else {
+				file.WriteFile(
+					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, fileName), ret,
+				)
+			}
+			break
+		default:
+			break
+		}
+		break
 	}
 }

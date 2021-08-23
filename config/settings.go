@@ -8,6 +8,21 @@ const (
 
 	SINGLE_LETTER   = "."
 	TRIPLE_LETTER   = "-"
-	INTERVAL_LETTER = "_"
+	INTERVAL_LETTER = " "
 	QUIT_LETTER     = "QUIT"
+
+	DEFAULT_FILE_NAME = "morse"
+
+	INTERVAL_MODE = "NORMAL"
+	/*
+		SPEED
+		// A INTERVAL_LETTER means character spacing.
+		// 3 INTERVAL_LETTER will be converted to space.
+
+		NORMAL
+		// 3 INTERVAL_LETTERs means character spacing.
+		// 7 INTERVAL_LETTERs will be converted to space.
+	*/
+
+	// FILE_BUFFER_SIZE = 1024
 )

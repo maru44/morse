@@ -7,6 +7,7 @@ import (
 	"morse/pkg/file"
 	"morse/pkg/mykey"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/eiannone/keyboard"
@@ -75,13 +76,14 @@ func main() {
 			scan2 := bufio.NewScanner(os.Stdin)
 			scan2.Scan()
 			fileName := scan2.Text()
+			saveString := strings.TrimSpace(ret)
 			if fileName == "" {
 				file.WriteFile(
-					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, config.DEFAULT_FILE_NAME), ret,
+					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, config.DEFAULT_FILE_NAME), saveString,
 				)
 			} else {
 				file.WriteFile(
-					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, fileName), ret,
+					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, fileName), saveString,
 				)
 			}
 			break

@@ -1,7 +1,9 @@
 package file
 
 import (
+	"morse/config"
 	"os"
+	"strings"
 )
 
 func WriteFile(fileName, content string) {
@@ -14,4 +16,15 @@ func WriteFile(fileName, content string) {
 	byteContent := []byte(content)
 
 	file.Write(byteContent)
+}
+
+func ConvertCode(in string) string {
+	var spaceLetter string
+	if config.INTERVAL_MODE == "NORMAL" {
+		spaceLetter = strings.Repeat(" ", 7)
+	} else if config.INTERVAL_MODE == "SPEED" {
+		spaceLetter = strings.Repeat(" ", 3)
+	}
+	ret := strings.Replace(in, spaceLetter, "/", -1)
+	return ret
 }

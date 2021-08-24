@@ -3,7 +3,7 @@ Type Morse code!
 
 ## demo
 
-![demo](https://raw.github.com/wiki/maru44/morse/images/morse.gif)
+![demo](https://raw.github.com/wiki/maru44/morse/images/morse1.gif)
 
 ## how to start
 

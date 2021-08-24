@@ -4,6 +4,9 @@ import (
 	"morse/config"
 	"os"
 	"strings"
+	"unsafe"
+
+	"github.com/alwindoss/morse"
 )
 
 func WriteFile(fileName, content string) {
@@ -25,6 +28,15 @@ func ConvertCode(in string) string {
 	} else if config.INTERVAL_MODE == "SPEED" {
 		spaceLetter = strings.Repeat(" ", 3)
 	}
-	ret := strings.Replace(in, spaceLetter, "/", -1)
-	return ret
+	spaceToSlash := strings.Replace(in, spaceLetter, "/", -1)
+	return convertDecoding(spaceToSlash)
+}
+
+func convertDecoding(in string) string {
+	h := morse.NewHacker()
+	out, err := h.Decode(strings.NewReader(in))
+	if err != nil {
+		panic(err)
+	}
+	return *(*string)(unsafe.Pointer(&out))
 }

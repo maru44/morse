@@ -81,9 +81,15 @@ func main() {
 				file.WriteFile(
 					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, config.DEFAULT_FILE_NAME), saveString,
 				)
+				file.WriteFile(
+					fmt.Sprintf("%s%s_decode.txt", config.DEFAULT_FILE_PATH, config.DEFAULT_FILE_NAME), file.ConvertCode(saveString),
+				)
 			} else {
 				file.WriteFile(
 					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, fileName), saveString,
+				)
+				file.WriteFile(
+					fmt.Sprintf("%s%s_decode.txt", config.DEFAULT_FILE_PATH, fileName), file.ConvertCode(saveString),
 				)
 			}
 			break

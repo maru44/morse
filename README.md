@@ -1,12 +1,18 @@
 # morse
 Type Morse code!
 
+## demo
+
+![demo](https://raw.github.com/wiki/maru44/morse/images/morse.gif)
+
 ## how to start
 
 get package needed
+
 `go mod tidy`
 
 Ignition!
+
 `go run morse.go`
 
 ## Settings

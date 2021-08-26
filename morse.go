@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	ch_rcv := make(chan string)
+	ch := make(chan string)
 	ret := ""
 
 	if err := keyboard.Open(); err != nil {
@@ -31,9 +31,9 @@ func main() {
 	go func() {
 		for {
 			select {
-			case v := <-ch_rcv:
+			case v := <-ch:
 				if v == config.QUIT_LETTER {
-					close(ch_rcv)
+					close(ch)
 					break
 				} else {
 					res := mykey.ConvertInputCode(v)
@@ -55,11 +55,11 @@ func main() {
 		}
 
 		if string(char) == config.QUIT_PING {
-			ch_rcv <- config.QUIT_LETTER
+			ch <- config.QUIT_LETTER
 			keyboard.Close()
 			break
 		} else {
-			ch_rcv <- string(char)
+			ch <- string(char)
 		}
 	}
 

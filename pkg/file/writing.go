@@ -1,6 +1,8 @@
 package file
 
 import (
+	"bufio"
+	"fmt"
 	"morse/config"
 	"os"
 	"strings"
@@ -9,7 +11,7 @@ import (
 	"github.com/alwindoss/morse"
 )
 
-func WriteFile(fileName, content string) {
+func writeFile(fileName, content string) {
 	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		panic(err)
@@ -21,7 +23,7 @@ func WriteFile(fileName, content string) {
 	file.Write(byteContent)
 }
 
-func ConvertCode(in string) string {
+func convertCode(in string) string {
 	var spaceLetter string
 	if config.INTERVAL_MODE == "NORMAL" {
 		spaceLetter = strings.Repeat(" ", 7)
@@ -39,4 +41,41 @@ func convertDecoding(in string) string {
 		panic(err)
 	}
 	return *(*string)(unsafe.Pointer(&out))
+}
+
+func SaveFileFromConsole(ret string) {
+	scan1 := bufio.NewScanner(os.Stdin)
+	fmt.Println("\nDo you save it? Press y OR n.")
+	for {
+		scan1.Scan()
+		isSave := scan1.Text()
+
+		switch isSave {
+		case "y":
+			fmt.Println("Enter file name.Default is morse.txt")
+			scan2 := bufio.NewScanner(os.Stdin)
+			scan2.Scan()
+			fileName := scan2.Text()
+			saveString := strings.TrimSpace(ret)
+			if fileName == "" {
+				writeFile(
+					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, config.DEFAULT_FILE_NAME), saveString,
+				)
+				writeFile(
+					fmt.Sprintf("%s%s_decode.txt", config.DEFAULT_FILE_PATH, config.DEFAULT_FILE_NAME), convertCode(saveString),
+				)
+			} else {
+				writeFile(
+					fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, fileName), saveString,
+				)
+				writeFile(
+					fmt.Sprintf("%s%s_decode.txt", config.DEFAULT_FILE_PATH, fileName), convertCode(saveString),
+				)
+			}
+			break
+		default:
+			break
+		}
+		break
+	}
 }

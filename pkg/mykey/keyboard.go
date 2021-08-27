@@ -1,7 +1,10 @@
 package mykey
 
 import (
+	"fmt"
 	"morse/config"
+
+	"github.com/eiannone/keyboard"
 )
 
 func ConvertInputCode(inp string) (out string) {
@@ -13,4 +16,15 @@ func ConvertInputCode(inp string) (out string) {
 		out = ""
 	}
 	return
+}
+
+func InitKeyboard() {
+	if err := keyboard.Open(); err != nil {
+		panic(err)
+	}
+	fmt.Printf(
+		"%s => '%s', %s => '%s'\n%s => to quit\ninterval %d millisecond\n",
+		config.SINGLE_PING, config.SINGLE_LETTER, config.TRIPLE_PING, config.TRIPLE_LETTER,
+		config.QUIT_PING, config.TYPING_INTERVAL,
+	)
 }

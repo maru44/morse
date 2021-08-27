@@ -24,4 +24,7 @@ const (
 		// 3 INTERVAL_LETTERs means character spacing.
 		// 7 INTERVAL_LETTERs will be converted to space.
 	*/
+
+	INPUT_MODE  = "KEYBOARD"
+	OUTPUT_MODE = "TEXTFILE"
 )

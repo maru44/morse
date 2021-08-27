@@ -27,3 +27,9 @@ I will introduce the default settings.
 
 0.4sec > space
 ```
+
+## Thanks
+
+https://github.com/eiannone/keyboard
+
+https://github.com/alwindoss/morse

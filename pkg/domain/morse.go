@@ -3,7 +3,7 @@ package domain
 import "morse/config"
 
 type Morse struct {
-	settings MorseSetting
+	Settings MorseSetting
 }
 
 type InputMode string
@@ -15,11 +15,11 @@ type MorseSetting struct {
 	Output OutputMode
 }
 
-type MorseFunctionsInteractor interface {
+type MorseInteractor interface {
 	Ignition()
 	SendChan(targetChannel chan<- string)
 	ReceiveChanWithConvert(targetPointer *string, ch chan string)
-	ReturnLetters(target string) string
+	ReturnLetters(target string) (morseString string, decoded string)
 }
 
 func InitMorse(settings ...MorseSetting) Morse {
@@ -35,7 +35,7 @@ func InitMorse(settings ...MorseSetting) Morse {
 	}
 
 	ret := Morse{
-		settings: s,
+		Settings: s,
 	}
 	return ret
 }

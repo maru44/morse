@@ -28,3 +28,11 @@ func InitKeyboard() {
 		config.QUIT_PING, config.TYPING_INTERVAL,
 	)
 }
+
+func CloseKeyboard() {
+	keyboard.Close()
+}
+
+func GetKey() (rune, keyboard.Key, error) {
+	return keyboard.GetKey()
+}

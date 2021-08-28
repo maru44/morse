@@ -1,0 +1,11 @@
+package config
+
+const (
+	/*   input   */
+	INPUT_MODE_KEYBOARD       = "KEYBOARD"
+	INPUT_MODE_BROWSER_BUTTON = "BROWSER_BUTTON"
+	/*   output   */
+	OUTPUT_MODE_TEXTFILE        = "TEXT_FILE"
+	OUTPUT_MODE_PLAIN_TEXT      = "PLAIN_TEXT"
+	OUTPUT_MODE_TEXT_WITH_PRINT = "TEXT_PRINT"
+)

@@ -1,30 +1,24 @@
 package main
 
 import (
-	"morse/config"
-	"morse/pkg/channel"
-	"morse/pkg/file"
+	"morse/pkg/domain"
+	"morse/pkg/interface/execute"
 	"morse/pkg/mykey"
-
-	"github.com/eiannone/keyboard"
+	"morse/pkg/usecase"
 )
 
 func main() {
 	ch := make(chan string)
 	ret := ""
 
-	if config.INPUT_MODE == "KEYBOARD" {
-		mykey.InitKeyboard()
-		defer keyboard.Close()
-	}
+	morse := domain.InitMorse()
+	mi := usecase.NewMorseInteractor(
+		&execute.MorseRepository{Morse: morse},
+	)
 
-	go channel.GeneralChanIn(&ret, ch)
-
-	if config.INPUT_MODE == "KEYBOARD" {
-		channel.OutKeyBoard(ch)
-	}
-
-	if config.OUTPUT_MODE == "TEXTFILE" {
-		file.SaveFileFromConsole(ret)
-	}
+	mi.Ignition()
+	defer mykey.CloseKeyboard()
+	go mi.ReceiveChanWithConvert(&ret, ch)
+	mi.SendChan(ch)
+	mi.ReturnLetters(ret)
 }

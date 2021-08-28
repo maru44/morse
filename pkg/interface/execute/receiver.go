@@ -20,7 +20,7 @@ func (mr *MorseRepository) receiveChanWithPrint(targetP *string, ch chan string)
 				*targetP += res
 				fmt.Print(res)
 			}
-		case <-time.After(config.TYPING_INTERVAL * time.Millisecond):
+		case <-time.After(time.Duration(mr.Settings.Interval) * time.Millisecond):
 			*targetP += config.INTERVAL_LETTER
 			fmt.Print(config.INTERVAL_LETTER)
 		}

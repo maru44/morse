@@ -10,9 +10,12 @@ type InputMode string
 
 type OutputMode string
 
+type InputInterval int
+
 type MorseSetting struct {
-	Input  InputMode
-	Output OutputMode
+	Input    InputMode
+	Output   OutputMode
+	Interval InputInterval
 }
 
 type MorseInteractor interface {
@@ -27,11 +30,15 @@ func InitMorse(settings ...MorseSetting) Morse {
 	if settings == nil {
 		// default settings
 		s = MorseSetting{
-			Input:  InputMode(config.INPUT_MODE_KEYBOARD),
-			Output: OutputMode(config.OUTPUT_MODE_TEXTFILE),
+			Input:    InputMode(config.INPUT_MODE_KEYBOARD),
+			Output:   OutputMode(config.OUTPUT_MODE_TEXTFILE),
+			Interval: config.TYPING_INTERVAL,
 		}
 	} else {
 		s = settings[0]
+		if s.Interval == 0 {
+			s.Interval = config.TYPING_INTERVAL
+		}
 	}
 
 	ret := Morse{

@@ -1,8 +1,9 @@
 package domain
 
+import "morse/config"
+
 type Morse struct {
 	settings MorseSetting
-	MorseFunctions
 }
 
 type InputMode string
@@ -14,13 +15,21 @@ type MorseSetting struct {
 	Output OutputMode
 }
 
-type MorseFunctions interface{}
+type MorseFunctionsInteractor interface {
+	Ignition()
+	SendChan(targetChannel chan<- string)
+	ReceiveChanWithConvert(targetPointer *string, ch chan string)
+	ReturnLetters(target string) string
+}
 
 func InitMorse(settings ...MorseSetting) Morse {
 	var s MorseSetting
 	if settings == nil {
 		// default settings
-		s = MorseSetting{}
+		s = MorseSetting{
+			Input:  InputMode(config.INPUT_MODE_KEYBOARD),
+			Output: OutputMode(config.OUTPUT_MODE_TEXTFILE),
+		}
 	} else {
 		s = settings[0]
 	}

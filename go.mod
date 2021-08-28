@@ -1,4 +1,4 @@
-module morse
+module github.com/maru44/morse
 
 go 1.16
 

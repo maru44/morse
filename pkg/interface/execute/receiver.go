@@ -2,9 +2,10 @@ package execute
 
 import (
 	"fmt"
-	"morse/config"
-	"morse/pkg/mykey"
 	"time"
+
+	"github.com/maru44/morse/config"
+	"github.com/maru44/morse/pkg/mykey"
 )
 
 func (mr *MorseRepository) receiveChanWithPrint(targetP *string, ch chan string) {

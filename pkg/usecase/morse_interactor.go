@@ -1,6 +1,6 @@
 package usecase
 
-import "morse/pkg/domain"
+import "github.com/maru44/morse/pkg/domain"
 
 type MorseInteractor struct {
 	repo MorseRepository

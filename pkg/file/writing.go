@@ -3,12 +3,12 @@ package file
 import (
 	"bufio"
 	"fmt"
-	"morse/config"
 	"os"
 	"strings"
 	"unsafe"
 
 	"github.com/alwindoss/morse"
+	"github.com/maru44/morse/config"
 )
 
 func writeFile(fileName, content string) {

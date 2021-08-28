@@ -1,10 +1,10 @@
 package execute
 
 import (
-	"morse/config"
-	"morse/pkg/domain"
-	"morse/pkg/file"
-	"morse/pkg/mykey"
+	"github.com/maru44/morse/config"
+	"github.com/maru44/morse/pkg/domain"
+	"github.com/maru44/morse/pkg/file"
+	"github.com/maru44/morse/pkg/mykey"
 )
 
 type MorseRepository struct {

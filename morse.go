@@ -1,10 +1,10 @@
 package main
 
 import (
-	"morse/pkg/domain"
-	"morse/pkg/interface/execute"
-	"morse/pkg/mykey"
-	"morse/pkg/usecase"
+	"github.com/maru44/morse/pkg/domain"
+	"github.com/maru44/morse/pkg/interface/execute"
+	"github.com/maru44/morse/pkg/mykey"
+	"github.com/maru44/morse/pkg/usecase"
 )
 
 func main() {

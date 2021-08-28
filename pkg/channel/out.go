@@ -1,9 +1,8 @@
 package channel
 
 import (
-	"morse/config"
-
 	"github.com/eiannone/keyboard"
+	"github.com/maru44/morse/config"
 )
 
 func OutKeyBoard(c chan<- string) {

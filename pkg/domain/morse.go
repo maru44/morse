@@ -1,6 +1,6 @@
 package domain
 
-import "morse/config"
+import "github.com/maru44/morse/config"
 
 type Morse struct {
 	Settings MorseSetting

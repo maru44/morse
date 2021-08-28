@@ -2,9 +2,9 @@ package mykey
 
 import (
 	"fmt"
-	"morse/config"
 
 	"github.com/eiannone/keyboard"
+	"github.com/maru44/morse/config"
 )
 
 func ConvertInputCode(inp string) (out string) {

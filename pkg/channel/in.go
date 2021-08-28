@@ -2,9 +2,10 @@ package channel
 
 import (
 	"fmt"
-	"morse/config"
-	"morse/pkg/mykey"
 	"time"
+
+	"github.com/maru44/morse/config"
+	"github.com/maru44/morse/pkg/mykey"
 )
 
 func GeneralChanIn(ret *string, ch chan string) string {

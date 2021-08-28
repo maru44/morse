@@ -1,8 +1,8 @@
 package execute
 
 import (
-	"morse/config"
-	"morse/pkg/mykey"
+	"github.com/maru44/morse/config"
+	"github.com/maru44/morse/pkg/mykey"
 )
 
 func sendKeyBoard(c chan<- string) {

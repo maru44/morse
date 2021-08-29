@@ -8,6 +8,23 @@ import (
 	"github.com/maru44/morse/pkg/mykey"
 )
 
+func (mr *MorseRepository) receiveChan(targetP *string, ch chan string) {
+	for {
+		select {
+		case v := <-ch:
+			if v == config.QUIT_LETTER {
+				close(ch)
+				break
+			} else {
+				res := mykey.ConvertInputCode(v)
+				*targetP += res
+			}
+		case <-time.After(time.Duration(mr.Settings.Interval) * time.Millisecond):
+			*targetP += config.INTERVAL_LETTER
+		}
+	}
+}
+
 func (mr *MorseRepository) receiveChanWithPrint(targetP *string, ch chan string) {
 	for {
 		select {

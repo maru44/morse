@@ -1,4 +1,5 @@
 # morse
+
 Type Morse code!
 
 ## demo
@@ -13,7 +14,7 @@ get package needed
 
 Ignition!
 
-`go run morse.go`
+`go run main.go`
 
 ## Settings
 

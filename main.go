@@ -47,13 +47,21 @@ func main() {
 		fileName := scan.Text()
 		saveString := strings.TrimSpace(*ret)
 		if fileName == "" {
-			writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileName, []byte(saveString))
-			writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileDecodedName, m.ConvertCode(saveString))
+			if err := writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileName, []byte(saveString)); err != nil {
+				panic(err)
+			}
+			if err := writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileDecodedName, m.ConvertCode(saveString)); err != nil {
+				panic(err)
+			}
 			return
 		}
 
-		writeFile(fmt.Sprintf("%s.txt", fileName), []byte(saveString))
-		writeFile(fmt.Sprintf("%s_decode.txt", fileName), m.ConvertCode(saveString))
+		if err := writeFile(fmt.Sprintf("%s.txt", fileName), []byte(saveString)); err != nil {
+			panic(err)
+		}
+		if err := writeFile(fmt.Sprintf("%s_decode.txt", fileName), m.ConvertCode(saveString)); err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -92,11 +100,14 @@ func receive(m *morse.Morse, ch chan string, ret *string) {
 	}
 }
 
-func writeFile(fileName string, content []byte) {
+func writeFile(fileName string, content []byte) error {
 	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
-	file.Write(content)
+	if _, err := file.Write(content); err != nil {
+		return err
+	}
+	return nil
 }

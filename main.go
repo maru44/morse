@@ -5,21 +5,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/eiannone/keyboard"
-	"github.com/maru44/morse/config"
 	"github.com/maru44/morse/morse"
 )
-
-type ms struct{}
-
-// func (m *ms) Morse() *morse.Morse {
-// 	return morse.NewMorse()
-// }
-
-// func (m *ms) Send() *morse.Morse {
-
-// }
 
 func main() {
 	ch := make(chan string)
@@ -29,10 +19,16 @@ func main() {
 	if err := keyboard.Open(); err != nil {
 		panic(err)
 	}
+
 	m := morse.NewMorse()
+	m.SetSend(func(m *morse.Morse, ch chan string) {
+		send(m, ch)
+	})
+	m.SetRecieve(func(m *morse.Morse, ch chan string, ret *string) {
+		receive(m, ch, ret)
+	})
 
 	fmt.Println(m.InitMessage())
-	defer keyboard.Close()
 
 	go m.Recieve(ch, ret)
 	m.Send(ch)
@@ -43,6 +39,7 @@ func main() {
 	scan.Scan()
 	isSave := scan.Text() == "y"
 
+	// saving
 	if isSave {
 		fmt.Println("Enter file name. Default is morse.txt")
 		scan := bufio.NewScanner(os.Stdin)
@@ -50,17 +47,56 @@ func main() {
 		fileName := scan.Text()
 		saveString := strings.TrimSpace(*ret)
 		if fileName == "" {
-			morse.WriteFile("storage/morse.txt", saveString)
-			morse.WriteFile("storage/morse_decode.txt", m.ConvertCode(saveString))
+			writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileName, []byte(saveString))
+			writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileDecodedName, m.ConvertCode(saveString))
 			return
 		}
 
-		morse.WriteFile(
-			fmt.Sprintf("%s%s.txt", config.DEFAULT_FILE_PATH, fileName), saveString,
-		)
-		morse.WriteFile(
-			fmt.Sprintf("%s%s_decode.txt", config.DEFAULT_FILE_PATH, fileName), m.ConvertCode(saveString),
-		)
-
+		writeFile(fmt.Sprintf("%s.txt", fileName), []byte(saveString))
+		writeFile(fmt.Sprintf("%s_decode.txt", fileName), m.ConvertCode(saveString))
 	}
+}
+
+func send(m *morse.Morse, ch chan string) {
+	for {
+		char, _, err := keyboard.GetKey()
+		defer keyboard.Close()
+		if err != nil {
+			panic(err)
+		}
+
+		if string(char) == m.QuitPing {
+			ch <- m.QuitLetter
+			keyboard.Close()
+			break
+		} else {
+			ch <- string(char)
+		}
+	}
+}
+
+func receive(m *morse.Morse, ch chan string, ret *string) {
+	for {
+		select {
+		case v := <-ch:
+			if v == m.QuitLetter {
+				close(ch)
+				break
+			} else {
+				m.ConvertInputCode(v, ret)
+			}
+		case <-time.After(time.Duration(m.Interval) * time.Millisecond):
+			*ret += m.IntervalLetter
+			fmt.Print(m.IntervalLetter)
+		}
+	}
+}
+
+func writeFile(fileName string, content []byte) {
+	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	file.Write(content)
 }

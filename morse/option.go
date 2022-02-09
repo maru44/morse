@@ -4,20 +4,24 @@ type Option func(*Morse)
 
 func NewMorse(opts ...Option) *Morse {
 	m := &Morse{
-		SinglePing:     "j",
-		TriplePing:     "k",
-		QuitPing:       "l",
-		SingleLetter:   ".",
-		TripleLetter:   "-",
-		IntervalLetter: " ",
-		QuitLetter:     "QUIT",
-		Interval:       400,
-		Speed:          SpeedModeNormal,
+		SinglePing:                   "j",
+		TriplePing:                   "k",
+		QuitPing:                     "l",
+		SingleLetter:                 ".",
+		TripleLetter:                 "-",
+		IntervalLetter:               " ",
+		QuitLetter:                   "QUIT",
+		Interval:                     400,
+		Speed:                        SpeedModeNormal,
+		DefaultSavingFileDir:         "./storage/",
+		DefaultSavingFileName:        "morse.txt",
+		DefaultSavingFileDecodedName: "morse_decode.txt",
 	}
 
 	for _, o := range opts {
 		o(m)
 	}
+
 	return m
 }
 
@@ -72,5 +76,23 @@ func Interval(in int) Option {
 func Speed(s SpeedMode) Option {
 	return func(m *Morse) {
 		m.Speed = s
+	}
+}
+
+func DefaultSavingFileDir(s string) Option {
+	return func(m *Morse) {
+		m.DefaultSavingFileDir = s
+	}
+}
+
+func DefaultSavingFileName(s string) Option {
+	return func(m *Morse) {
+		m.DefaultSavingFileName = s
+	}
+}
+
+func DefaultSavingFileDecodedName(s string) Option {
+	return func(m *Morse) {
+		m.DefaultSavingFileDecodedName = s
 	}
 }

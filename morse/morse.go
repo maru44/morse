@@ -3,20 +3,15 @@ package morse
 import (
 	"fmt"
 	"strings"
-	"time"
-	"unsafe"
 
 	"github.com/alwindoss/morse"
-	"github.com/eiannone/keyboard"
 )
 
 type (
 	SpeedMode string
 
-	Pinger interface {
-		Ping() string
-		Letter() string
-	}
+	Send    func(chan string)
+	Recieve func(chan string, *string)
 
 	Morse struct {
 		// default is j
@@ -39,6 +34,17 @@ type (
 		Interval int
 		// default is NORMAL
 		Speed SpeedMode
+
+		// default ./storage/
+		DefaultSavingFileDir string
+		// default morse.txt
+		DefaultSavingFileName string
+		// default morse_decode.txt
+		DefaultSavingFileDecodedName string
+
+		// interface
+		Send
+		Recieve
 	}
 )
 
@@ -66,7 +72,7 @@ func (m *Morse) ConvertInputCode(in string, ret *string) {
 	}
 }
 
-func (m *Morse) ConvertCode(in string) string {
+func (m *Morse) ConvertCode(in string) []byte {
 	spaceLetter := strings.Repeat(" ", 7)
 	if m.Speed == SpeedModeFast {
 		spaceLetter = strings.Repeat(" ", 3)
@@ -78,40 +84,17 @@ func (m *Morse) ConvertCode(in string) string {
 	if err != nil {
 		panic(err)
 	}
-	return *(*string)(unsafe.Pointer(&out))
+	return out
 }
 
-func (m *Morse) Recieve(ch chan string, ret *string) {
-	for {
-		select {
-		case v := <-ch:
-			if v == m.QuitLetter {
-				close(ch)
-				break
-			} else {
-				m.ConvertInputCode(v, ret)
-			}
-		case <-time.After(time.Duration(m.Interval) * time.Millisecond):
-			*ret += m.IntervalLetter
-			fmt.Print(m.IntervalLetter)
-		}
-	}
+func (m *Morse) SetRecieve(f func(m *Morse, ch chan string, ret *string)) {
+	m.Recieve = Recieve(func(ch chan string, ret *string) {
+		f(m, ch, ret)
+	})
 }
 
-func (m *Morse) Send(ch chan string) {
-	for {
-		char, _, err := keyboard.GetKey()
-		defer keyboard.Close()
-		if err != nil {
-			panic(err)
-		}
-
-		if string(char) == m.QuitPing {
-			ch <- m.QuitLetter
-			keyboard.Close()
-			break
-		} else {
-			ch <- string(char)
-		}
-	}
+func (m *Morse) SetSend(f func(m *Morse, ch chan string)) {
+	m.Send = Send(func(ch chan string) {
+		f(m, ch)
+	})
 }

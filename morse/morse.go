@@ -42,8 +42,9 @@ type (
 		// default morse_decode.txt
 		DefaultSavingFileDecodedName string
 
-		// interface
+		// send to chan
 		Send
+		// receive chan
 		Recieve
 	}
 )

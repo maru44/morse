@@ -50,7 +50,7 @@ type (
 )
 
 const (
-	SpeedModeFast   = SpeedMode("SPEED")
+	SpeedModeFast   = SpeedMode("FAST")
 	SpeedModeNormal = SpeedMode("NORMAL")
 )
 

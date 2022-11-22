@@ -12,7 +12,7 @@ Type Morse code!
 
 ## Settings
 
-You can edit settings.<br/>
+You can edit settings.
 
 ```go
 package main

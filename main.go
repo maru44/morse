@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/eiannone/keyboard"
 	"github.com/maru44/morse/morse"
@@ -13,8 +12,7 @@ import (
 
 func main() {
 	ch := make(chan string)
-	r := ""
-	ret := &r
+	result := ""
 
 	if err := keyboard.Open(); err != nil {
 		panic(err)
@@ -25,12 +23,12 @@ func main() {
 		send(m, ch)
 	})
 	m.SetRecieve(func(m *morse.Morse, ch chan string, ret *string) {
-		receive(m, ch, ret)
+		morse.BaseReceive(m, ch, &result)
 	})
 
 	fmt.Println(m.InitMessage())
 
-	go m.Recieve(ch, ret)
+	go m.Recieve(ch, &result)
 	m.Send(ch)
 
 	// file save
@@ -45,7 +43,7 @@ func main() {
 		scan := bufio.NewScanner(os.Stdin)
 		scan.Scan()
 		fileName := scan.Text()
-		saveString := strings.TrimSpace(*ret)
+		saveString := strings.TrimSpace(result)
 		if fileName == "" {
 			if err := writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileName, []byte(saveString)); err != nil {
 				panic(err)
@@ -79,23 +77,6 @@ func send(m *morse.Morse, ch chan string) {
 			break
 		} else {
 			ch <- string(char)
-		}
-	}
-}
-
-func receive(m *morse.Morse, ch chan string, ret *string) {
-	for {
-		select {
-		case v := <-ch:
-			if v == m.QuitLetter {
-				close(ch)
-				break
-			} else {
-				m.ConvertInputCode(v, ret)
-			}
-		case <-time.After(time.Duration(m.Interval) * time.Millisecond):
-			*ret += m.IntervalLetter
-			fmt.Print(m.IntervalLetter)
 		}
 	}
 }

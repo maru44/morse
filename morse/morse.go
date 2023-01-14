@@ -62,13 +62,17 @@ func (m *Morse) InitMessage() string {
 	)
 }
 
-func (m *Morse) ConvertInputCode(in string, ret *string) {
+func (m *Morse) ConvertInputCode(in string, ret *string, stdout bool) {
 	switch in {
 	case m.SinglePing:
-		fmt.Print(m.SingleLetter)
+		if stdout {
+			fmt.Print(m.SingleLetter)
+		}
 		*ret += m.SingleLetter
 	case m.TriplePing:
-		fmt.Print(m.TripleLetter)
+		if stdout {
+			fmt.Print(m.TripleLetter)
+		}
 		*ret += m.TripleLetter
 	}
 }

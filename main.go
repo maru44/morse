@@ -45,10 +45,10 @@ func main() {
 		fileName := scan.Text()
 		saveString := strings.TrimSpace(result)
 		if fileName == "" {
-			if err := writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileName, []byte(saveString)); err != nil {
+			if err := writeFile("./storage/morse.txt", []byte(saveString)); err != nil {
 				panic(err)
 			}
-			if err := writeFile(m.DefaultSavingFileDir+m.DefaultSavingFileDecodedName, m.ConvertCode(saveString)); err != nil {
+			if err := writeFile("./storage/morse_decode.txt", m.ConvertCode(saveString)); err != nil {
 				panic(err)
 			}
 			return

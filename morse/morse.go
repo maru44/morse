@@ -8,8 +8,6 @@ import (
 )
 
 type (
-	SpeedMode string
-
 	Send    func(chan string)
 	Recieve func(chan string, *string)
 
@@ -32,26 +30,12 @@ type (
 
 		// Milli second
 		Interval int
-		// default is NORMAL
-		Speed SpeedMode
-
-		// default ./storage/
-		DefaultSavingFileDir string
-		// default morse.txt
-		DefaultSavingFileName string
-		// default morse_decode.txt
-		DefaultSavingFileDecodedName string
 
 		// send to chan
 		Send
 		// receive chan
 		Recieve
 	}
-)
-
-const (
-	SpeedModeFast   = SpeedMode("FAST")
-	SpeedModeNormal = SpeedMode("NORMAL")
 )
 
 func (m *Morse) InitMessage() string {
@@ -79,9 +63,6 @@ func (m *Morse) ConvertInputCode(in string, ret *string, stdout bool) {
 
 func (m *Morse) ConvertCode(in string) []byte {
 	spaceLetter := strings.Repeat(" ", 7)
-	if m.Speed == SpeedModeFast {
-		spaceLetter = strings.Repeat(" ", 3)
-	}
 	spaceToSlash := strings.Replace(in, spaceLetter, "/", -1)
 
 	h := morse.NewHacker()

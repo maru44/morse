@@ -19,16 +19,12 @@ jobs:
       #     key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
       #     restore-keys: |
       #       ${{ runner.os }}-go-
-  lint:
+  ci:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+      - name: test
         run: go test ./...

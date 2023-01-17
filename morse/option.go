@@ -78,7 +78,7 @@ func Quit(s string) Option {
 }
 
 // IntervalDuration is a function to define one time unit long.
-// Default is 400 millisecond.
+// Default is 400 milliseconds.
 func IntervalDuration(in int) Option {
 	return func(m *Morse) {
 		m.IntervalDuration = in

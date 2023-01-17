@@ -42,7 +42,7 @@ type (
 
 func (m *Morse) InitMessage() string {
 	return fmt.Sprintf(
-		"%s => '%s', %s => '%s'\n%s => to quit\ninterval %d millisecond",
+		"%s => '%s', %s => '%s'\n%s => to quit\none time unit is %d milliseconds",
 		m.DitPing, m.Dit, m.DahPing, m.Dah,
 		m.QuitPing, m.IntervalDuration,
 	)
@@ -64,11 +64,11 @@ func (m *Morse) ConvertInputCode(in string, ret *string, stdout bool) {
 }
 
 func (m *Morse) ConvertCode(in string) []byte {
-	spaceLetter := strings.Repeat(" ", 7)
-	spaceToSlash := strings.Replace(in, spaceLetter, "/", -1)
+	space := strings.Repeat(" ", 7)
+	spaceReplaced := strings.Replace(in, space, " ....... ", -1)
 
 	h := morse.NewHacker()
-	out, err := h.Decode(strings.NewReader(spaceToSlash))
+	out, err := h.Decode(strings.NewReader(spaceReplaced))
 	if err != nil {
 		panic(err)
 	}

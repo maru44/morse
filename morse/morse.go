@@ -29,7 +29,7 @@ type (
 		Quit string
 
 		// one time unit long (millisecond)
-		// shortgap (between letters): three time units long
+		// shortgap (between letters): one time unit long
 		// medium gap (between words): seven time units long
 		IntervalDuration int
 

@@ -4,14 +4,14 @@ type Option func(*Morse)
 
 func NewMorse(opts ...Option) *Morse {
 	m := &Morse{
-		SinglePing:     "j",
-		TriplePing:     "k",
-		QuitPing:       "l",
-		SingleLetter:   ".",
-		TripleLetter:   "-",
-		IntervalLetter: " ",
-		QuitLetter:     "QUIT",
-		Interval:       400,
+		DitPing:          "j",
+		DahPing:          "k",
+		QuitPing:         "l",
+		Dit:              ".",
+		Dah:              "-",
+		Interval:         " ",
+		Quit:             "QUIT",
+		IntervalDuration: 400,
 	}
 
 	for _, o := range opts {
@@ -21,53 +21,66 @@ func NewMorse(opts ...Option) *Morse {
 	return m
 }
 
-// SinglePing is function to combine `.` and input key.
-func SinglePing(s string) Option {
+// DitPing is a function to define key for `dit`.
+// Default is `j`.
+func DitPing(s string) Option {
 	return func(m *Morse) {
-		m.SinglePing = s
+		m.DitPing = s
 	}
 }
 
-// TriplePing is function to combine `-` and input key.
-func TriplePing(s string) Option {
+// DahPing is a function to define key for `dah`.
+// Default is `k`.
+func DahPing(s string) Option {
 	return func(m *Morse) {
-		m.TriplePing = s
+		m.DahPing = s
 	}
 }
 
-// QuitPing is function to inform finish of input.
+// QuitPing is a function to define informing finish of input.
+// Default is `l`.
 func QuitPing(s string) Option {
 	return func(m *Morse) {
 		m.QuitPing = s
 	}
 }
 
-func SingleLetter(s string) Option {
+// Dit is a function to set `dit`.
+// Default is `.`.
+func Dit(s string) Option {
 	return func(m *Morse) {
-		m.SingleLetter = s
+		m.Dit = s
 	}
 }
 
-func TripleLetter(s string) Option {
+// Dah is a function to set `dah`.
+// Default is `-`.
+func Dah(s string) Option {
 	return func(m *Morse) {
-		m.TripleLetter = s
+		m.Dah = s
 	}
 }
 
-func IntervalLetter(s string) Option {
+// Interval is a function to set interval.
+// Default is ` `.
+func Interval(s string) Option {
 	return func(m *Morse) {
-		m.IntervalLetter = s
+		m.Interval = s
 	}
 }
 
-func QuitlLetter(s string) Option {
+// Quit is a function to define signal for finishing.
+// Default is `QUIT`.
+func Quit(s string) Option {
 	return func(m *Morse) {
-		m.QuitLetter = s
+		m.Quit = s
 	}
 }
 
-func Interval(in int) Option {
+// IntervalDuration is a function to define one time unit long.
+// Default is 400 millisecond.
+func IntervalDuration(in int) Option {
 	return func(m *Morse) {
-		m.Interval = in
+		m.IntervalDuration = in
 	}
 }

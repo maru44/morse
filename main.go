@@ -23,7 +23,7 @@ func main() {
 		send(m, ch)
 	})
 	m.SetRecieve(func(m *morse.Morse, ch chan string, ret *string) {
-		morse.BaseReceive(m, ch, &result)
+		morse.BaseReceive(m, ch, &result, true)
 	})
 
 	fmt.Println(m.InitMessage())
@@ -72,7 +72,7 @@ func send(m *morse.Morse, ch chan string) {
 		}
 
 		if string(char) == m.QuitPing {
-			ch <- m.QuitLetter
+			ch <- m.Quit
 			keyboard.Close()
 			break
 		} else {

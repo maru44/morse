@@ -5,19 +5,19 @@ import (
 	"time"
 )
 
-func BaseReceive(m *Morse, ch chan string, ret *string) {
+func BaseReceive(m *Morse, ch chan string, ret *string, stdout bool) {
 	for {
 		select {
 		case v := <-ch:
-			if v == m.QuitLetter {
+			if v == m.Quit {
 				close(ch)
 				break
 			} else {
-				m.ConvertInputCode(v, ret, true)
+				m.ConvertInputCode(v, ret, stdout)
 			}
-		case <-time.After(time.Duration(m.Interval) * time.Millisecond):
-			*ret += m.IntervalLetter
-			fmt.Print(m.IntervalLetter)
+		case <-time.After(time.Duration(m.IntervalDuration) * time.Millisecond):
+			*ret += m.Interval
+			fmt.Print(m.Interval)
 		}
 	}
 }

@@ -13,23 +13,25 @@ type (
 
 	Morse struct {
 		// default is j
-		SinglePing string
+		DitPing string
 		// default is k
-		TriplePing string
+		DahPing string
 		// default is l
 		QuitPing string
 
 		// default is .
-		SingleLetter string
+		Dit string
 		// default is -
-		TripleLetter string
+		Dah string
 		// default is " "
-		IntervalLetter string
+		Interval string
 		// default is "QUIT"
-		QuitLetter string
+		Quit string
 
-		// Milli second
-		Interval int
+		// one time unit long (millisecond)
+		// shortgap (between letters): three time units long
+		// medium gap (between words): seven time units long
+		IntervalDuration int
 
 		// send to chan
 		Send
@@ -41,23 +43,23 @@ type (
 func (m *Morse) InitMessage() string {
 	return fmt.Sprintf(
 		"%s => '%s', %s => '%s'\n%s => to quit\ninterval %d millisecond",
-		m.SinglePing, m.SingleLetter, m.TriplePing, m.TripleLetter,
-		m.QuitPing, m.Interval,
+		m.DitPing, m.Dit, m.DahPing, m.Dah,
+		m.QuitPing, m.IntervalDuration,
 	)
 }
 
 func (m *Morse) ConvertInputCode(in string, ret *string, stdout bool) {
 	switch in {
-	case m.SinglePing:
+	case m.DitPing:
 		if stdout {
-			fmt.Print(m.SingleLetter)
+			fmt.Print(m.Dit)
 		}
-		*ret += m.SingleLetter
-	case m.TriplePing:
+		*ret += m.Dit
+	case m.DahPing:
 		if stdout {
-			fmt.Print(m.TripleLetter)
+			fmt.Print(m.Dah)
 		}
-		*ret += m.TripleLetter
+		*ret += m.Dah
 	}
 }
 

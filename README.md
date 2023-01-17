@@ -21,17 +21,17 @@ import "github.com/maru44/morse/morse"
 
 func main() {
     // set with args
-    m1 := morse.NewMorse(morse.SinglePing("a"), morse.TriplePing("b"))
+    m1 := morse.NewMorse(morse.DitPing("a"), morse.DahPing("b"))
 
     // overwrite
     m2 := morse.NewMorse()
-    m.SinglePing = "a"
-    m.TriplePing = "b"
+    m2.DitPing = "a"
+    m2.DahPing = "b"
 
     // define by struct
     m3 := morse.Morse{
-        SinglePing: "a",
-        TriplePing: "b",
+        DitPing: "a",
+        DahPing: "b",
         // ...
     }
 }
@@ -40,11 +40,11 @@ func main() {
 The default input settings is the below.
 
 ```
-"j" > . (dot)
-"k" > - (dash)   (You don't have to press it long.)
+"j" > . (dit)
+"k" > - (dah)   (You don't have to press it long.)
 "l" > to quit it
 
-0.4sec > space
+0.4sec > one time unit
 ```
 
 ## You can use morse as package.

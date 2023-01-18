@@ -12,9 +12,8 @@ func BaseReceive(m *Morse, ch chan string, ret *string, stdout bool) {
 			if v == m.Quit {
 				close(ch)
 				break
-			} else {
-				m.ConvertInputCode(v, ret, stdout)
 			}
+			m.ConvertInputCode(v, ret, stdout)
 		case <-time.After(time.Duration(m.IntervalDuration) * time.Millisecond):
 			*ret += m.Interval
 			fmt.Print(m.Interval)

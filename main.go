@@ -75,9 +75,8 @@ func send(m *morse.Morse, ch chan string) {
 			ch <- m.Quit
 			keyboard.Close()
 			break
-		} else {
-			ch <- string(char)
 		}
+		ch <- string(char)
 	}
 }
 

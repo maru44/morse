@@ -12,7 +12,7 @@ import (
 
 func main() {
 	ch := make(chan string)
-	result := ""
+	var result string
 
 	if err := keyboard.Open(); err != nil {
 		panic(err)
